@@ -39,7 +39,13 @@ const AiAnalysis = ({ callAI }: AiAnalysisProps) => {
             </span>
           </div>
           {callAI?.reject_reason && (
-            <div className="w-full max-w-[140px] h-10 flex items-center justify-center bg-[#B245451A] rounded-[8px] py-[9px]">
+            <div
+              className={`w-full ${
+                callAI.reject_reason === "Менеджер не дотиснув"
+                  ? "max-w-[220px]"
+                  : "max-w-[140px]"
+              } h-10 flex items-center justify-center bg-[#B245451A] rounded-[8px] py-[9px]`}
+            >
               <span className="text-[#B24545] font-semibold text-[16px] leading-[100%]">
                 {callAI.reject_reason}
               </span>
