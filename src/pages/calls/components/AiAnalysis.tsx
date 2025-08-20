@@ -7,16 +7,19 @@ interface AiAnalysisProps {
 
 const AiAnalysis = ({ callAI }: AiAnalysisProps) => {
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-[#00101F] font-semibold text-[24px] leading-[100%]">
+    <div className="flex flex-col gap-4 sm:gap-6">
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 sm:gap-4">
+        <h2 className="text-[#00101F] font-semibold text-[18px] sm:text-[20px] lg:text-[24px] leading-[100%]">
           Аналітика від АІ
         </h2>
-        <div className="flex gap-6 max-w-[600px] justify-end w-full">
+        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 lg:gap-6 max-w-full lg:max-w-[600px] justify-start lg:justify-end w-full">
           <div className="flex items-center gap-2">
-            <MdStarRate color={callAI?.ai_color || "#B2A945"} />
+            <MdStarRate
+              color={callAI?.ai_color || "#B2A945"}
+              className="w-5 h-5 sm:w-6 sm:h-6"
+            />
             <span
-              className="font-semibold text-[24px] leading-[100%]"
+              className="font-semibold text-[18px] sm:text-[20px] lg:text-[24px] leading-[100%]"
               style={{ color: callAI?.ai_color || "#B2A945" }}
             >
               {callAI?.ai_score || "—"}
@@ -24,7 +27,7 @@ const AiAnalysis = ({ callAI }: AiAnalysisProps) => {
           </div>
 
           <div
-            className="w-full max-w-[140px] h-10 flex items-center justify-center rounded-[8px] py-[9px]"
+            className="w-full sm:w-auto sm:max-w-[140px] h-10 flex items-center justify-center rounded-[8px] py-[9px] px-3"
             style={{
               backgroundColor: callAI?.status_color
                 ? `${callAI.status_color}1A`
@@ -32,7 +35,7 @@ const AiAnalysis = ({ callAI }: AiAnalysisProps) => {
             }}
           >
             <span
-              className="font-semibold text-[16px] leading-[100%]"
+              className="font-semibold text-[14px] sm:text-[16px] leading-[100%] text-center"
               style={{ color: callAI?.status_color || "#62B245" }}
             >
               {callAI?.status_label || "Завантаження..."}
@@ -40,13 +43,13 @@ const AiAnalysis = ({ callAI }: AiAnalysisProps) => {
           </div>
           {callAI?.reject_reason && (
             <div
-              className={`w-full ${
+              className={`w-full sm:w-auto ${
                 callAI.reject_reason === "Менеджер не дотиснув"
-                  ? "max-w-[220px]"
-                  : "max-w-[140px]"
-              } h-10 flex items-center justify-center bg-[#B245451A] rounded-[8px] py-[9px]`}
+                  ? "sm:max-w-[220px]"
+                  : "sm:max-w-[140px]"
+              } h-10 flex items-center justify-center bg-[#B245451A] rounded-[8px] py-[9px] px-3`}
             >
-              <span className="text-[#B24545] font-semibold text-[16px] leading-[100%]">
+              <span className="text-[#B24545] font-semibold text-[14px] sm:text-[16px] leading-[100%] text-center">
                 {callAI.reject_reason}
               </span>
             </div>
@@ -54,10 +57,10 @@ const AiAnalysis = ({ callAI }: AiAnalysisProps) => {
         </div>
       </div>
 
-      <div className="flex gap-10 justify-between">
+      <div className="flex flex-col lg:flex-row gap-6 lg:gap-10 justify-between">
         <RadarMap callAI={callAI} />
 
-        <div className="max-w-[481px] max-h-[600px] overflow-y-auto w-full bg-[#739C9C1A] rounded-[12px] p-4 flex flex-col gap-4">
+        <div className="max-w-full lg:max-w-[481px] max-h-[400px] sm:max-h-[500px] lg:max-h-[600px] overflow-y-auto w-full bg-[#739C9C1A] rounded-[12px] p-3 sm:p-4 flex flex-col gap-3 sm:gap-4">
           {callAI?.analysis_text ? (
             <div className="text-[#9A9A9A] text-[14px] leading-[140%] prose prose-sm max-w-none prose-headings:text-[#00101F] prose-headings:font-semibold prose-strong:text-[#00101F] prose-strong:font-semibold prose-p:mb-2 prose-ul:mb-2 prose-li:mb-1">
               {callAI.analysis_text.split("\n").map((line, index) => {
@@ -126,9 +129,9 @@ const RadarMap = ({ callAI }: RadarMapProps) => {
     { label: "10", value: 0, title: "Завантаження..." },
   ];
 
-  const size = 480;
+  const size = 350; // Smaller for mobile
   const center = size / 2;
-  const maxRadius = 150;
+  const maxRadius = 120; // Adjusted for smaller size
   const levels = 5; // Number of concentric circles
 
   // Calculate angle for each data point
@@ -194,8 +197,13 @@ const RadarMap = ({ callAI }: RadarMapProps) => {
       .join(" ") + " Z";
 
   return (
-    <div className="max-w-[480px] w-full">
-      <svg width={size} height={size} className="overflow-visible">
+    <div className="max-w-full sm:max-w-[400px] lg:max-w-[480px] w-full flex justify-center">
+      <svg
+        width={size}
+        height={size}
+        className="overflow-visible w-full h-auto max-w-[300px] sm:max-w-[350px] lg:max-w-[480px]"
+        viewBox={`0 0 ${size} ${size}`}
+      >
         {/* Grid circles */}
         {gridCircles.map((radius, index) => (
           <circle

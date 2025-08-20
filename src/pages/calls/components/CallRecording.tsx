@@ -142,26 +142,31 @@ export const CallRecording = ({ audioUrl }: CallRecordingProps) => {
         }}
       />
 
-      <div className="w-full bg-[#F7F7F7] border border-[#EAEAEA] rounded-2xl p-4 flex items-center gap-4">
-        <div className="flex items-center gap-4">
+      <div className="w-full bg-[#F7F7F7] border border-[#EAEAEA] rounded-2xl p-3 sm:p-4 flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
+        <div className="flex items-center gap-3 sm:gap-4 w-full sm:w-auto">
           <button
             onClick={handlePlayPause}
             disabled={isLoading || duration === 0}
-            className="size-12 rounded-full bg-[#739C9C] flex items-center justify-center hover:bg-[#5F8888] transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="size-10 sm:size-12 rounded-full bg-[#739C9C] flex items-center justify-center hover:bg-[#5F8888] transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isLoading ? (
-              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
             ) : isPlaying ? (
-              <IoMdPause color="white" size={20} />
+              <IoMdPause color="white" size={16} className="sm:w-5 sm:h-5" />
             ) : (
-              <IoMdPlay color="white" size={20} style={{ marginLeft: "2px" }} />
+              <IoMdPlay
+                color="white"
+                size={16}
+                className="sm:w-5 sm:h-5"
+                style={{ marginLeft: "1px" }}
+              />
             )}
           </button>
           <div className="flex flex-col gap-1">
-            <span className="text-[#00101F] font-semibold text-[16px] leading-[100%]">
+            <span className="text-[#00101F] font-semibold text-[14px] sm:text-[16px] leading-[100%]">
               Запис дзвінка
             </span>
-            <span className="text-[#9A9A9A] text-[14px] font-semibold leading-[100%]">
+            <span className="text-[#9A9A9A] text-[12px] sm:text-[14px] font-semibold leading-[100%]">
               {isLoading
                 ? "Завантаження..."
                 : `${formatTime(Math.floor(currentTime))} / ${formatTime(
@@ -172,7 +177,7 @@ export const CallRecording = ({ audioUrl }: CallRecordingProps) => {
         </div>
 
         {/* Progress Bar */}
-        <div className="flex-1 flex items-center gap-3">
+        <div className="flex-1 flex items-center gap-3 w-full">
           <div
             ref={progressRef}
             className="flex-1 h-2 bg-[#E5E5E5] rounded-full cursor-pointer relative group"
@@ -186,7 +191,7 @@ export const CallRecording = ({ audioUrl }: CallRecordingProps) => {
             >
               {/* Progress handle */}
               <div
-                className="absolute right-0 top-1/2 transform translate-x-1/2 -translate-y-1/2 w-4 h-4 bg-[#739C9C] rounded-full border-2 border-white shadow-sm opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                className="absolute right-0 top-1/2 transform translate-x-1/2 -translate-y-1/2 w-3 h-3 sm:w-4 sm:h-4 bg-[#739C9C] rounded-full border-2 border-white shadow-sm opacity-0 group-hover:opacity-100 transition-opacity duration-200"
                 style={{
                   opacity: isDragging ? 1 : undefined,
                 }}

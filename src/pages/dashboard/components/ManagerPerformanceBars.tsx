@@ -20,7 +20,7 @@ const ManagerPerformanceBars = ({
   );
 
   return (
-    <div className="flex justify-between gap-2 md:gap-4 overflow-x-auto">
+    <div className="flex justify-between gap-2 md:gap-2 overflow-x-auto">
       {data.map((manager, index) => {
         const barHeight = (Math.abs(manager.rating) / maxRating) * 100;
 
@@ -62,12 +62,8 @@ const ManagerPerformanceBars = ({
             </div>
 
             <div className="text-center w-full">
-              <span className="text-[#9A9A9A] text-[12px] md:text-[14px] leading-[120%] font-medium block">
-                {manager.name.split("\n").map((line, i) => (
-                  <span key={i} className="block">
-                    {line}
-                  </span>
-                ))}
+              <span className="text-[#9A9A9A] text-[12px] md:text-[12px] leading-[120%] font-medium flex">
+                {manager.name}
               </span>
             </div>
           </div>

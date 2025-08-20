@@ -54,15 +54,18 @@ const CallTranscript = ({ callId }: CallTranscriptProps) => {
   console.log(transcriptData, "transcriptData");
 
   return (
-    <div className="flex flex-col gap-6 max-h-[630px] overflow-y-auto">
+    <div className="flex flex-col gap-4 sm:gap-6 max-h-[400px] sm:max-h-[500px] lg:max-h-[630px] overflow-y-auto">
       {transcriptData?.data.items?.map((message: TranscriptMessage) => (
-        <div key={message.id} className="flex gap-4">
-          <div className="flex items-center gap-2 min-w-[100px]">
-            <span className="text-[#00101F] font-semibold text-[16px] leading-[100%]">
+        <div
+          key={message.id}
+          className="flex flex-col sm:flex-row gap-2 sm:gap-4"
+        >
+          <div className="flex items-center gap-2 min-w-[80px] sm:min-w-[100px]">
+            <span className="text-[#00101F] font-semibold text-[14px] sm:text-[16px] leading-[100%]">
               {message.role === "manager" ? "Менеджер:" : "Клієнт:"}
             </span>
           </div>
-          <p className="text-[#00101F] text-[16px] leading-[140%] pl-0">
+          <p className="text-[#00101F] text-[14px] sm:text-[16px] leading-[140%] flex-1">
             {message.text}
           </p>
         </div>

@@ -176,47 +176,47 @@ export const UserInfo = () => {
   }
 
   return (
-    <div className="max-w-[542px] w-full p-6  flex flex-col gap-6 bg-[#FFFFFF] rounded-2xl ">
-      <div className="flex flex-col gap-6 w-full">
-        <div className="flex flex-col gap-8 items-center w-full">
+    <div className="max-w-[542px] w-full p-3 sm:p-4 lg:p-6 flex flex-col gap-4 sm:gap-6 bg-[#FFFFFF] rounded-2xl">
+      <div className="flex flex-col gap-4 sm:gap-6 w-full">
+        <div className="flex flex-col gap-4 sm:gap-6 lg:gap-8 items-center w-full">
           <div className="flex items-start justify-between w-full">
             <button
               onClick={() => {}}
-              className="size-8 md:size-10 rounded-[12px] flex items-center justify-center bg-[#EBF0F0] hover:bg-[#D1E5E5] transition-colors duration-200 group"
+              className="size-8 sm:size-9 md:size-10 rounded-[8px] sm:rounded-[10px] md:rounded-[12px] flex items-center justify-center bg-[#EBF0F0] hover:bg-[#D1E5E5] transition-colors duration-200 group"
             >
               <RiArrowLeftLine
-                size={20}
-                className="text-[#739C9C] group-hover:text-[#5F8888] transition-colors duration-200 md:w-6 md:h-6"
+                size={16}
+                className="text-[#739C9C] group-hover:text-[#5F8888] transition-colors duration-200 sm:w-5 sm:h-5 md:w-6 md:h-6"
               />
             </button>
             <img
               src={displayData.avatar}
-              className="size-[120px] shrink-0 rounded-full"
+              className="size-[80px] sm:size-[100px] lg:size-[120px] shrink-0 rounded-full"
               alt={displayData.name}
             />
             <button
               onClick={handleEditUser}
-              className="size-8 md:size-10 rounded-[12px] flex items-center justify-center border border-[#739C9C] hover:bg-[#D1E5E5] transition-colors duration-200 group"
+              className="size-8 sm:size-9 md:size-10 rounded-[8px] sm:rounded-[10px] md:rounded-[12px] flex items-center justify-center border border-[#739C9C] hover:bg-[#D1E5E5] transition-colors duration-200 group"
             >
               <BiPencil
-                size={16}
-                className="text-[#739C9C] group-hover:text-[#5F8888] transition-colors duration-200 md:w-6 md:h-6"
+                size={14}
+                className="text-[#739C9C] group-hover:text-[#5F8888] transition-colors duration-200 sm:w-4 sm:h-4 md:w-6 md:h-6"
               />
             </button>
           </div>
-          <div className="text-center flex flex-col gap-2">
-            <h2 className="text-[#00101F] font-semibold text-[24px] leading-[100%]">
+          <div className="text-center flex flex-col gap-1 sm:gap-2">
+            <h2 className="text-[#00101F] font-semibold text-[20px] sm:text-[22px] lg:text-[24px] leading-[100%]">
               {displayData.name}
             </h2>
-            <span className="text-[#9A9A9A] text-[14px] leading-[100%]">
+            <span className="text-[#9A9A9A] text-[12px] sm:text-[13px] lg:text-[14px] leading-[100%]">
               {displayData.email}
             </span>
           </div>
         </div>
 
-        <div className="flex flex-col gap-6">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <h2 className="text-[#00101F] text-[20px] md:text-[24px] leading-[100%] font-semibold">
+        <div className="flex flex-col gap-4 sm:gap-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+            <h2 className="text-[#00101F] text-[18px] sm:text-[20px] lg:text-[24px] leading-[100%] font-semibold">
               Статистика
             </h2>
             <Dropdown
@@ -228,87 +228,87 @@ export const UserInfo = () => {
                 )
               }
               variant="minimal"
-              className="w-auto min-w-[150px]"
+              className="w-full sm:w-auto min-w-[150px]"
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-3 md:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 lg:gap-6">
             {/* Кількість дзвінків */}
-            <div className="bg-[#739C9C14] rounded-[16px] p-4 flex items-center gap-3 md:gap-4">
+            <div className="bg-[#739C9C14] rounded-[12px] sm:rounded-[16px] p-3 sm:p-4 flex items-center gap-3">
               <div
-                className="size-12 md:size-14 shrink-0 rounded-[6px] md:rounded-[8px] flex items-center justify-center"
+                className="size-10 sm:size-12 lg:size-14 shrink-0 rounded-[6px] sm:rounded-[8px] flex items-center justify-center"
                 style={{ backgroundColor: "#62B2451A" }}
               >
                 <MdOutlineLocalPhone
                   color="#4CAF50"
-                  className="w-6 h-6 md:w-7 md:h-7"
+                  className="w-5 h-5 sm:w-6 sm:h-6 lg:w-7 lg:h-7"
                 />
               </div>
               <div className="min-w-0 flex-1">
-                <h3 className="text-[#00101F] text-[16px] md:text-[18px]  leading-[100%] font-semibold">
+                <h3 className="text-[#00101F] text-[14px] sm:text-[16px] lg:text-[18px] leading-[100%] font-semibold">
                   {displayData.totalCalls}
                 </h3>
-                <p className="text-[#9A9A9A] text-[12px] md:text-[14px] leading-[100%] mt-1">
+                <p className="text-[#9A9A9A] text-[10px] sm:text-[12px] lg:text-[14px] leading-[100%] mt-1">
                   Кількість дзвінків
                 </p>
               </div>
             </div>
 
             {/* Середня AI-оцінка */}
-            <div className="bg-[#B2A9451A] rounded-[16px] p-4 flex items-center gap-3 md:gap-4">
+            <div className="bg-[#B2A9451A] rounded-[12px] sm:rounded-[16px] p-3 sm:p-4 flex items-center gap-3">
               <div
-                className="size-12 md:size-14 shrink-0 rounded-[6px] md:rounded-[8px] flex items-center justify-center"
+                className="size-10 sm:size-12 lg:size-14 shrink-0 rounded-[6px] sm:rounded-[8px] flex items-center justify-center"
                 style={{ backgroundColor: "#B2A9451A" }}
               >
                 <MdOutlineStarOutline
                   color="#FFB74D"
-                  className="w-6 h-6 md:w-7 md:h-7"
+                  className="w-5 h-5 sm:w-6 sm:h-6 lg:w-7 lg:h-7"
                 />
               </div>
               <div className="min-w-0 flex-1">
-                <h3 className="text-[#00101F] text-[16px] md:text-[18px] leading-[100%] font-semibold">
+                <h3 className="text-[#00101F] text-[14px] sm:text-[16px] lg:text-[18px] leading-[100%] font-semibold">
                   {displayData.aiScore}
                 </h3>
-                <p className="text-[#9A9A9A] text-[12px] md:text-[14px] leading-[100%] mt-1">
+                <p className="text-[#9A9A9A] text-[10px] sm:text-[12px] lg:text-[14px] leading-[100%] mt-1">
                   Середня AI-оцінка
                 </p>
               </div>
             </div>
 
             {/* Тривалість дзвінка */}
-            <div className="bg-[#739C9C14] rounded-[16px] p-4 flex items-center gap-3 md:gap-4">
+            <div className="bg-[#739C9C14] rounded-[12px] sm:rounded-[16px] p-3 sm:p-4 flex items-center gap-3">
               <div
-                className="size-12 md:size-14 shrink-0 rounded-[6px] md:rounded-[8px] flex items-center justify-center"
+                className="size-10 sm:size-12 lg:size-14 shrink-0 rounded-[6px] sm:rounded-[8px] flex items-center justify-center"
                 style={{ backgroundColor: "#4573B21A" }}
               >
                 <MdOutlinePhonePaused
                   color="#42A5F5"
-                  className="w-6 h-6 md:w-7 md:h-7"
+                  className="w-5 h-5 sm:w-6 sm:h-6 lg:w-7 lg:h-7"
                 />
               </div>
               <div className="min-w-0 flex-1">
-                <h3 className="text-[#00101F] text-[16px] md:text-[18px] leading-[100%] font-semibold">
+                <h3 className="text-[#00101F] text-[14px] sm:text-[16px] lg:text-[18px] leading-[100%] font-semibold">
                   {displayData.avgDuration}
                 </h3>
-                <p className="text-[#9A9A9A] text-[12px] md:text-[14px] leading-[100%] mt-1">
+                <p className="text-[#9A9A9A] text-[10px] sm:text-[12px] lg:text-[14px] leading-[100%] mt-1">
                   Тривалість дзвінка
                 </p>
               </div>
             </div>
 
             {/* Всього на лінії */}
-            <div className="bg-[#739C9C14] rounded-[16px] p-4 flex items-center gap-3 md:gap-4">
+            <div className="bg-[#739C9C14] rounded-[12px] sm:rounded-[16px] p-3 sm:p-4 flex items-center gap-3">
               <div
-                className="size-12 md:size-14 shrink-0 rounded-[6px] md:rounded-[8px] flex items-center justify-center"
+                className="size-10 sm:size-12 lg:size-14 shrink-0 rounded-[6px] sm:rounded-[8px] flex items-center justify-center"
                 style={{ backgroundColor: "#4573B21A" }}
               >
                 <SpeedIcon />
               </div>
               <div className="min-w-0 flex-1">
-                <h3 className="text-[#00101F] text-[16px] md:text-[18px]  leading-[100%] font-semibold">
+                <h3 className="text-[#00101F] text-[14px] sm:text-[16px] lg:text-[18px] leading-[100%] font-semibold">
                   {displayData.totalOnLine}
                 </h3>
-                <p className="text-[#9A9A9A] text-[12px] md:text-[14px] leading-[100%] mt-1">
+                <p className="text-[#9A9A9A] text-[10px] sm:text-[12px] lg:text-[14px] leading-[100%] mt-1">
                   Всього на лінії
                 </p>
               </div>
@@ -353,8 +353,7 @@ export const UserInfo = () => {
 
 const SpeedIcon = () => (
   <svg
-    width="32"
-    height="32"
+    className="w-5 h-5 sm:w-6 sm:h-6 lg:w-7 lg:h-7"
     viewBox="0 0 32 32"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
