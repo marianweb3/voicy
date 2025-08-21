@@ -3,12 +3,17 @@ import { useNavigate } from "react-router-dom";
 import { Input } from "../../components/ui/input";
 import { Dropdown } from "../../components/ui/dropdown";
 import { SearchableDropdown } from "../../components/ui/searchable-dropdown";
+import { DatePicker } from "../../components/ui/datepicker";
 import { IoSearch } from "react-icons/io5";
 import { BiRefresh } from "react-icons/bi";
 import { MdOutlineStar, MdOutlineStarBorder } from "react-icons/md";
 import { IoMdArrowForward } from "react-icons/io";
 import Pagination from "../users/components/Pagination";
-import { useCalls, useManagersForDropdown } from "../../hooks/useCalls";
+import {
+  useCalls,
+  useManagersForDropdown,
+  useDepartments,
+} from "../../hooks/useCalls";
 import useDebounce from "../../hooks/useDebounce";
 
 const CallsPage = () => {
@@ -24,6 +29,11 @@ const CallsPage = () => {
   const [ratingFilter, setRatingFilter] = useState("");
   const [reasonFilter, setReasonFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
+  const [dateFrom, setDateFrom] = useState("");
+  const [dateTo, setDateTo] = useState("");
+  const [departmentFilter, setDepartmentFilter] = useState<number | undefined>(
+    undefined
+  );
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
 
@@ -46,12 +56,18 @@ const CallsPage = () => {
     verificationFilter,
     ratingFilter,
     reasonFilter,
-    statusFilter
+    statusFilter,
+    dateFrom,
+    dateTo,
+    departmentFilter
   );
 
   // Fetch managers for dropdown
   const { managers, isLoadingManagers } =
     useManagersForDropdown(managerSearchTerm);
+
+  // Fetch departments for dropdown
+  const { departments,  } = useDepartments();
 
   // Remove the static sample data
   const allCalls = calls;
@@ -94,6 +110,14 @@ const CallsPage = () => {
     { value: "done", label: "Виконано" },
     { value: "waiting", label: "Очікування" },
     { value: "in_progress", label: "В процесі" },
+  ];
+
+  const departmentOptions = [
+    { value: "", label: "Відділ" },
+    ...departments.map((department: { id: number; name: string }) => ({
+      value: department.id.toString(),
+      label: department.name,
+    })),
   ];
 
   // Since filtering is now handled by the API, we use the calls directly
@@ -175,6 +199,21 @@ const CallsPage = () => {
     setCurrentPage(1);
   };
 
+  const handleDateFromChange = (value: string) => {
+    setDateFrom(value);
+    setCurrentPage(1);
+  };
+
+  const handleDateToChange = (value: string) => {
+    setDateTo(value);
+    setCurrentPage(1);
+  };
+
+  const handleDepartmentFilterChange = (value: string) => {
+    setDepartmentFilter(value ? parseInt(value) : undefined);
+    setCurrentPage(1);
+  };
+
   return (
     <div className="w-full flex flex-col gap-4 md:gap-6 max-w-[1400px] mx-auto">
       {/* Main Section */}
@@ -223,7 +262,15 @@ const CallsPage = () => {
               Фільтри:
             </span>
             <div className="flex flex-col sm:flex-row flex-wrap gap-2 md:gap-3 w-full sm:w-auto">
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:flex gap-2 md:gap-3">
+              <div className="flex justify-end gap-4 flex-wrap">
+                <Dropdown
+                  options={departmentOptions}
+                  value={departmentFilter?.toString() || ""}
+                  onChange={handleDepartmentFilterChange}
+                  variant="default"
+                  size="sm"
+                  className="w-full sm:w-auto [&>button]:!py-[14.5px] sm:min-w-[120px] md:min-w-[200px]"
+                />
                 <SearchableDropdown
                   options={managerOptions}
                   value={managerFilter?.toString() || ""}
@@ -252,8 +299,6 @@ const CallsPage = () => {
                   size="sm"
                   className="w-full sm:w-auto [&>button]:!py-[14.5px]  sm:min-w-[120px] md:min-w-[200px]"
                 />
-              </div>
-              <div className="grid grid-cols-2 sm:flex gap-2 md:gap-3">
                 <Dropdown
                   options={reasonOptions}
                   value={reasonFilter}
@@ -270,6 +315,22 @@ const CallsPage = () => {
                   size="sm"
                   className="w-full sm:w-auto [&>button]:!py-[14.5px]  sm:min-w-[120px] md:min-w-[200px]"
                 />
+                <div className="flex gap-2">
+                  <DatePicker
+                    value={dateFrom}
+                    onChange={handleDateFromChange}
+                    placeholder="Дата від"
+                    size="sm"
+                    className="w-full sm:w-auto [&>button]:!py-[14.5px]  sm:min-w-[120px] md:min-w-[150px]"
+                  />
+                  <DatePicker
+                    value={dateTo}
+                    onChange={handleDateToChange}
+                    placeholder="Дата до"
+                    size="sm"
+                    className="w-full sm:w-auto [&>button]:!py-[14.5px]  sm:min-w-[120px] md:min-w-[150px]"
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -525,9 +586,6 @@ const CallsPage = () => {
         {/* Pagination */}
         {!isLoadingCalls && !callsError && calls.length > 0 && (
           <div className="flex items-center justify-between">
-            <span className="text-[#9A9A9A] text-[14px]">
-              Всього {totalItems} Записів
-            </span>
             <Pagination
               currentPage={currentPage}
               totalPages={totalPages}

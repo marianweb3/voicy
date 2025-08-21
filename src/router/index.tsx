@@ -45,7 +45,7 @@ export const router = createBrowserRouter([
       {
         path: "dashboard",
         element: (
-          <ProtectedRoute>
+          <ProtectedRoute requiredRole="dashboard">
             <DashboardPage />
           </ProtectedRoute>
         ),
@@ -53,7 +53,7 @@ export const router = createBrowserRouter([
       {
         path: "calls",
         element: (
-          <ProtectedRoute>
+          <ProtectedRoute requiredRole="calls">
             <CallsPage />
           </ProtectedRoute>
         ),
@@ -61,7 +61,7 @@ export const router = createBrowserRouter([
       {
         path: "calls/:id",
         element: (
-          <ProtectedRoute>
+          <ProtectedRoute requiredRole="calls">
             <CallDetailsPage />
           </ProtectedRoute>
         ),
@@ -69,7 +69,7 @@ export const router = createBrowserRouter([
       {
         path: "managers",
         element: (
-          <ProtectedRoute>
+          <ProtectedRoute requiredRole="managers">
             <ManagersPage />
           </ProtectedRoute>
         ),
@@ -77,7 +77,7 @@ export const router = createBrowserRouter([
       {
         path: "managers/:id",
         element: (
-          <ProtectedRoute>
+          <ProtectedRoute requiredRole="managers">
             <ManagerDetailsPage />
           </ProtectedRoute>
         ),
@@ -85,7 +85,7 @@ export const router = createBrowserRouter([
       {
         path: "processes",
         element: (
-          <ProtectedRoute>
+          <ProtectedRoute requiredRole="processes">
             <ProcessesPage />
           </ProtectedRoute>
         ),
@@ -93,7 +93,7 @@ export const router = createBrowserRouter([
       {
         path: "settings",
         element: (
-          <ProtectedRoute>
+          <ProtectedRoute requiredRole="settings">
             <SettingsPage />
           </ProtectedRoute>
         ),
@@ -101,7 +101,7 @@ export const router = createBrowserRouter([
       {
         path: "users",
         element: (
-          <ProtectedRoute>
+          <ProtectedRoute requiredRole="admins">
             <UsersPage />
           </ProtectedRoute>
         ),

@@ -103,7 +103,7 @@ const CallDynamics = ({
         )}
       </div>
 
-      <CallDynamicsChart data={chartData} />
+      <CallDynamicsChart data={chartData} typeFilter={typeFilter} />
     </div>
   );
 };

@@ -5,12 +5,15 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { authAPI } from "../../services/api";
+import LogoutModal from "./LogoutModal";
 
 const Header = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const queryClient = useQueryClient();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   // Get user profile
   const { data: user, isLoading } = useQuery({
@@ -21,15 +24,30 @@ const Header = () => {
   });
 
   const handleLogout = () => {
-    // Clear local storage
-    localStorage.removeItem("token");
-    localStorage.removeItem("isLoggedIn");
+    setIsLogoutModalOpen(true);
+  };
 
-    // Clear query cache
-    queryClient.clear();
+  const handleLogoutConfirm = async () => {
+    setIsLoggingOut(true);
 
-    // Redirect to auth page
-    window.location.href = "/auth";
+    try {
+      // Clear local storage
+      localStorage.removeItem("token");
+      localStorage.removeItem("isLoggedIn");
+
+      // Clear query cache
+      queryClient.clear();
+
+      // Redirect to auth page
+      window.location.href = "/auth";
+    } finally {
+      setIsLoggingOut(false);
+      setIsLogoutModalOpen(false);
+    }
+  };
+
+  const handleLogoutCancel = () => {
+    setIsLogoutModalOpen(false);
   };
 
   const toggleMobileMenu = () => {
@@ -49,6 +67,12 @@ const Header = () => {
     { path: "/settings", label: "Налаштування", requiredRole: "settings" },
     { path: "/users", label: "Користувачі", requiredRole: "admins" },
   ];
+
+  // Filter navigation items based on user roles
+  const userRoles = user?.role || [];
+  const accessibleNavigationItems = navigationItems.filter((item) =>
+    userRoles.includes(item.requiredRole)
+  );
 
   const isActive = (path: string) => {
     return location.pathname === path;
@@ -140,7 +164,7 @@ const Header = () => {
 
         {/* Desktop navigation */}
         <nav className="hidden lg:flex gap-2 lg:gap-4 xl:gap-6 2xl:gap-10">
-          {navigationItems.map((item) => (
+          {accessibleNavigationItems.map((item) => (
             <Link
               key={item.path}
               to={item.path}
@@ -289,7 +313,7 @@ const Header = () => {
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.4, duration: 0.4, ease: "easeOut" }}
               >
-                {navigationItems.map((item, index) => (
+                {accessibleNavigationItems.map((item, index) => (
                   <motion.button
                     key={item.path}
                     onClick={() => handleMobileNavClick(item.path)}
@@ -344,6 +368,14 @@ const Header = () => {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Logout Confirmation Modal */}
+      <LogoutModal
+        isOpen={isLogoutModalOpen}
+        onClose={handleLogoutCancel}
+        onConfirm={handleLogoutConfirm}
+        isLoading={isLoggingOut}
+      />
     </>
   );
 };

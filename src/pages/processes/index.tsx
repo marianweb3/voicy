@@ -80,7 +80,7 @@ const ProcessesPage = () => {
       {
         id: "search_call",
         value: processStatistics.search_call.count.toLocaleString(),
-        label: "Заплановані дзвінки",
+        label: "Знайдені дзвінки",
         percentage: `${processStatistics.search_call.percent}%`,
         color: "#62B245",
         bgColor: "#62B2451A",
@@ -89,7 +89,7 @@ const ProcessesPage = () => {
       {
         id: "voice_to_text",
         value: processStatistics.voice_to_text.count.toLocaleString(),
-        label: "Voice to text",
+        label: "Розпізнавання тексту",
         percentage: `${processStatistics.voice_to_text.percent}%`,
         color: "#4573B2",
         bgColor: "#4573B21A",
@@ -98,7 +98,7 @@ const ProcessesPage = () => {
       {
         id: "ai",
         value: processStatistics.ai.count.toLocaleString(),
-        label: "Аналізи",
+        label: "AI-аналіз",
         percentage: `${processStatistics.ai.percent}%`,
         color: "#B2A945",
         bgColor: "#B2A9451A",
@@ -107,7 +107,7 @@ const ProcessesPage = () => {
       {
         id: "sent",
         value: processStatistics.sent.count.toLocaleString(),
-        label: "Send to telegram",
+        label: "Відправка в Telegram",
         percentage: `${processStatistics.sent.percent}%`,
         color: "#4573B2",
         bgColor: "#4573B21A",
@@ -172,7 +172,7 @@ const ProcessesPage = () => {
   return (
     <div className="w-full flex flex-col gap-4 md:gap-6 max-w-[1400px] mx-auto">
       {/* Statistics Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-2 md:gap-4 lg:gap-6">
+      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-2 md:gap-4 lg:gap-4">
         {isLoadingProcesses
           ? // Loading skeleton for stats
             Array.from({ length: 5 }).map((_, index) => (

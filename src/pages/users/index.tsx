@@ -275,6 +275,7 @@ const UsersPage = () => {
           setIsEditUserModalOpen(false);
           setSelectedUser(null);
         }}
+        withoutDepartment
         onSave={handleSaveEditUser}
         user={selectedUser}
         isLoading={isEditingAdmin}

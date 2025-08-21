@@ -64,6 +64,7 @@ const ManagersPage = () => {
       email: string;
       phone?: string;
       photo?: File;
+      department_id?: number;
     },
     onSuccess: () => void
   ) => {
@@ -73,6 +74,7 @@ const ManagersPage = () => {
       phone: managerData.phone,
       crm_id: managerData.crmId,
       photo: managerData.photo,
+      department_id: managerData.department_id,
     };
 
     createManager(createData, {

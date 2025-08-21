@@ -1,6 +1,25 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { callsAPI, managersAPI, AddCommentRequest } from "../services/api";
 import { showSuccessToast, showErrorToast } from "../utils/toast";
+import api from "../lib/axios";
+
+// Helper function to convert date from DD-MM-YYYY to YYYY-MM-DD format
+const convertDateFormat = (dateString: string): string => {
+  if (!dateString) return "";
+
+  // Check if date is already in YYYY-MM-DD format
+  if (dateString.match(/^\d{4}-\d{2}-\d{2}$/)) {
+    return dateString;
+  }
+
+  // Convert from DD-MM-YYYY to YYYY-MM-DD
+  const [day, month, year] = dateString.split("-");
+  if (day && month && year) {
+    return `${year}-${month}-${day}`;
+  }
+
+  return "";
+};
 
 export const useCalls = (
   page: number = 1,
@@ -10,8 +29,15 @@ export const useCalls = (
   is_checked?: number,
   ai_score?: string,
   reject_reason?: string,
-  status?: string
+  status?: string,
+  date_from: string = "",
+  date_to: string = "",
+  department_id?: number
 ) => {
+  // Convert date formats for API
+  const formattedDateFrom = convertDateFormat(date_from);
+  const formattedDateTo = convertDateFormat(date_to);
+
   // Get calls catalog
   const {
     data: callsData,
@@ -31,6 +57,9 @@ export const useCalls = (
       ai_score,
       reject_reason,
       status,
+      formattedDateFrom,
+      formattedDateTo,
+      department_id,
     ],
     queryFn: () =>
       callsAPI.getCatalog(
@@ -41,7 +70,10 @@ export const useCalls = (
         is_checked,
         ai_score,
         reject_reason,
-        status
+        status,
+        formattedDateFrom,
+        formattedDateTo,
+        department_id
       ),
     staleTime: 2 * 60 * 1000, // 2 minutes
     placeholderData: (previousData) => previousData, // Keep previous data while loading new data
@@ -63,6 +95,34 @@ export const useCalls = (
 
     // Actions
     refetchCalls,
+  };
+};
+
+export const useDepartments = () => {
+  // Get departments for dropdown options
+  const {
+    data: departmentsData,
+    isLoading: isLoadingDepartments,
+    error: departmentsError,
+  } = useQuery({
+    queryKey: ["departments"],
+    queryFn: async () => {
+      const response = await api.get("/managers/departments");
+      return response.data;
+    },
+    staleTime: 10 * 60 * 1000, // 10 minutes - departments don't change often
+    placeholderData: (previousData) => previousData,
+  });
+
+  return {
+    // Data
+    departments: departmentsData?.data || [],
+
+    // Loading states
+    isLoadingDepartments,
+
+    // Error states
+    departmentsError,
   };
 };
 
@@ -158,7 +218,6 @@ export const useTranscript = (id: number) => {
     enabled: !!id, // Only run query if id is provided
     staleTime: 5 * 60 * 1000, // 5 minutes - transcripts don't change often
   });
-
 
   return {
     // Data

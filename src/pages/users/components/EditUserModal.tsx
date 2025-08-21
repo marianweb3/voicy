@@ -2,10 +2,13 @@ import { useState, useEffect } from "react";
 import { Modal } from "../../../components/ui/modal";
 import { Button } from "../../../components/ui/button";
 import { Input } from "../../../components/ui/input";
+import { Dropdown } from "../../../components/ui/dropdown";
+import { MultiselectDropdown } from "../../../components/ui/multiselect-dropdown";
 import { HiOutlineCamera } from "react-icons/hi2";
 import { MdOutlineEmail, MdOutlinePassword } from "react-icons/md";
 import { FaRegUser } from "react-icons/fa";
 import { User } from "./UsersTable";
+import { useDepartments } from "../../../hooks/useCalls";
 
 interface EditUserModalProps {
   isOpen: boolean;
@@ -17,11 +20,14 @@ interface EditUserModalProps {
     password?: string;
     avatar?: string;
     photo?: File;
+    department_id?: number;
+    permissions?: string;
   }) => void;
   user: User | null;
   isLoading?: boolean;
   onDeletePhoto?: (userId: number) => void;
   isDeletingPhoto?: boolean;
+  withoutDepartment?: boolean;
 }
 
 const EditUserModal = ({
@@ -32,22 +38,50 @@ const EditUserModal = ({
   isLoading,
   onDeletePhoto,
   isDeletingPhoto = false,
+  withoutDepartment = false,
 }: EditUserModalProps) => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
+    department_id: undefined as number | undefined,
+    permissions: [] as string[],
   });
   const [avatar, setAvatar] = useState<string>("");
   const [photoFile, setPhotoFile] = useState<File | null>(null);
 
+  // Fetch departments for dropdown
+  const { departments } = useDepartments();
+  // Department options for dropdown
+  const departmentOptions = [
+    { value: "", label: "Відділ" },
+    ...departments.map((department: { id: number; name: string }) => ({
+      value: department.id.toString(),
+      label: department.name,
+    })),
+  ];
+
+  // Permissions options for multiselect
+  const permissionsOptions = [
+    { value: "admins", label: "Адміністратори" },
+    { value: "dashboard", label: "Дашборд" },
+    { value: "calls", label: "Дзвінки" },
+    { value: "managers", label: "Менеджери" },
+    { value: "processes", label: "Процеси" },
+    { value: "settings", label: "Налаштування" },
+  ];
+
   // Initialize form data when user prop changes
   useEffect(() => {
     if (user) {
+      console.log(user, "user");
       setFormData({
         name: user.full_name,
         email: user.email,
         password: "",
+        //@ts-ignore
+        department_id: user.department_id, // Will be set from API if available
+        permissions: user.role || [], // Use existing roles as permissions
       });
       setAvatar(user.photo || "");
       setPhotoFile(null);
@@ -58,6 +92,20 @@ const EditUserModal = ({
     setFormData((prev) => ({
       ...prev,
       [field]: value,
+    }));
+  };
+
+  const handleDepartmentChange = (value: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      department_id: value ? parseInt(value) : undefined,
+    }));
+  };
+
+  const handlePermissionsChange = (value: string[]) => {
+    setFormData((prev) => ({
+      ...prev,
+      permissions: value,
     }));
   };
 
@@ -82,6 +130,8 @@ const EditUserModal = ({
         password: formData.password || undefined,
         avatar: avatar || undefined,
         photo: photoFile || undefined,
+        department_id: formData.department_id,
+        permissions: formData.permissions.join(","), // Convert array to comma-separated string
       });
       onClose();
     }
@@ -103,6 +153,8 @@ const EditUserModal = ({
         name: user.full_name,
         email: user.email,
         password: "",
+        department_id: undefined,
+        permissions: user.role || [],
       });
       setAvatar(user.photo || "");
       setPhotoFile(null);
@@ -118,7 +170,7 @@ const EditUserModal = ({
         {/* Modal Header */}
         <div className="text-center mb-8">
           <h2 className="text-[#22272F] text-[24px] font-semibold leading-[100%]">
-            Редагувати користувача
+            Редагувати менеджера
           </h2>
         </div>
 
@@ -190,6 +242,41 @@ const EditUserModal = ({
               onChange={(e) => handleInputChange("email", e.target.value)}
               icon={<MdOutlineEmail size={20} />}
               iconPosition="left"
+            />
+          </div>
+
+          {!withoutDepartment && (
+            <>
+              {/* Department Field */}
+              <div>
+                <label className="block text-[#9A9A9A] text-[16px] font-normal mb-2">
+                  Відділ
+                </label>
+                <Dropdown
+                  options={departmentOptions}
+                  value={formData.department_id?.toString() || ""}
+                  onChange={handleDepartmentChange}
+                  variant="default"
+                  size="sm"
+                  className="!w-full"
+                />
+              </div>
+            </>
+          )}
+
+          {/* Permissions Field */}
+          <div>
+            <label className="block text-[#9A9A9A] text-[16px] font-normal mb-2">
+              Права
+            </label>
+            <MultiselectDropdown
+              options={permissionsOptions}
+              value={formData.permissions}
+              onChange={handlePermissionsChange}
+              placeholder="Виберіть права доступу"
+              variant="default"
+              size="sm"
+              className="!w-full"
             />
           </div>
 

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { BiPencil } from "react-icons/bi";
 import {
   MdOutlineLocalPhone,
@@ -81,6 +81,8 @@ export const UserInfo = () => {
         rejectionReasons: managerData.rejects,
         totalRejections: managerData.rejects.total,
         rejectsText: managerData.rejects.text,
+        //@ts-ignore
+        department: managerData.manager.department,
       }
     : {
         id: 3,
@@ -112,11 +114,13 @@ export const UserInfo = () => {
     password?: string;
     avatar?: string;
     photo?: File;
+    department_id?: number;
   }) => {
     const editData = {
       full_name: updatedUserData.name,
       email: updatedUserData.email,
       photo: updatedUserData.photo,
+      department_id: updatedUserData.department_id,
     };
 
     editManager(
@@ -151,6 +155,8 @@ export const UserInfo = () => {
     });
   };
 
+  const navigate = useNavigate();
+
   // Show loading state
   if (isLoadingManagerView) {
     return (
@@ -175,13 +181,15 @@ export const UserInfo = () => {
     );
   }
 
+  console.log(displayData, "displayData");
+
   return (
     <div className="max-w-[542px] w-full p-3 sm:p-4 lg:p-6 flex flex-col gap-4 sm:gap-6 bg-[#FFFFFF] rounded-2xl">
       <div className="flex flex-col gap-4 sm:gap-6 w-full">
         <div className="flex flex-col gap-4 sm:gap-6 lg:gap-8 items-center w-full">
           <div className="flex items-start justify-between w-full">
             <button
-              onClick={() => {}}
+              onClick={() => navigate("/managers")}
               className="size-8 sm:size-9 md:size-10 rounded-[8px] sm:rounded-[10px] md:rounded-[12px] flex items-center justify-center bg-[#EBF0F0] hover:bg-[#D1E5E5] transition-colors duration-200 group"
             >
               <RiArrowLeftLine
@@ -211,6 +219,11 @@ export const UserInfo = () => {
             <span className="text-[#9A9A9A] text-[12px] sm:text-[13px] lg:text-[14px] leading-[100%]">
               {displayData.email}
             </span>
+            {displayData.department?.name && (
+              <span className="text-[#00101F] text-[12px] sm:text-[13px] lg:text-[14px] leading-[100%] font-medium">
+                Відділ: {displayData.department.name}
+              </span>
+            )}
           </div>
         </div>
 
@@ -342,6 +355,7 @@ export const UserInfo = () => {
           is_blocked: 0,
           created_at: new Date().toISOString(),
           last_login_at: null,
+          department_id: displayData.department?.id,
         }}
         isLoading={isEditingManager}
         onDeletePhoto={handleDeletePhoto}

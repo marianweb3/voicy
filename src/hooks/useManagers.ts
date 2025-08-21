@@ -4,6 +4,7 @@ import {
   ManagerCreateRequest,
   ManagerEditRequest,
 } from "../services/api";
+import { showSuccessToast, showErrorToast } from "../utils/toast";
 
 export const useManagers = (
   page: number = 1,
@@ -147,11 +148,14 @@ export const useManagerDynamics = (
     enabled: !!id, // Only run query if id is provided
   });
 
+  console.log(managerDynamicsData, "managerDynamicsData");
+
   return {
     // Data
     managerDynamicsData,
     dynamicsPoints: managerDynamicsData?.data,
-    timeUpdate: managerDynamicsData?.message,
+    //@ts-ignore
+    timeUpdate: managerDynamicsData?.time_update,
 
     // Loading states
     isLoadingManagerDynamics,
@@ -197,5 +201,44 @@ export const useManagerCalls = (
 
     // Actions
     refetchManagerCalls,
+  };
+};
+
+export const useAIAnalysis = ({ onFinish }: { onFinish: () => void }) => {
+  const queryClient = useQueryClient();
+
+  // AI Analysis mutation
+  const aiAnalysisMutation = useMutation({
+    mutationFn: (analysisData: {
+      id_crm: string;
+      manager_id: string;
+      client_phone: string;
+      file: File;
+    }) => managersAPI.analyzeAI(analysisData),
+    onSuccess: (response) => {
+      showSuccessToast(response.message || "AI аналіз успішно запущено");
+      // Invalidate relevant queries to refresh data
+      queryClient.invalidateQueries({ queryKey: ["managers"] });
+      queryClient.invalidateQueries({ queryKey: ["calls"] });
+      onFinish();
+    },
+    onError: (error: any) => {
+      console.error("AI analysis failed:", error);
+      const message =
+        error?.response?.data?.message || "Помилка при запуску AI аналізу";
+      showErrorToast(message);
+    },
+  });
+
+  return {
+    // Loading states
+    isAnalyzing: aiAnalysisMutation.isPending,
+
+    // Error states
+    analysisError: aiAnalysisMutation.error,
+
+    // Actions
+    analyzeAI: aiAnalysisMutation.mutate,
+    analyzeAIAsync: aiAnalysisMutation.mutateAsync,
   };
 };

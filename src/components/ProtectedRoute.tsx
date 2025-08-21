@@ -5,9 +5,13 @@ import { authAPI } from "../services/api";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
+  requiredRole?: string;
 }
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
+  children,
+  requiredRole,
+}) => {
   const location = useLocation();
   const token = localStorage.getItem("token");
 
@@ -43,6 +47,17 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
     localStorage.removeItem("token");
     localStorage.removeItem("isLoggedIn");
     return <Navigate to="/auth" state={{ from: location }} replace />;
+  }
+
+  // Check if user has required role
+  if (requiredRole) {
+    const userRoles = user.role || [];
+    const hasRequiredRole = userRoles.includes(requiredRole);
+
+    if (!hasRequiredRole) {
+      // User doesn't have required role, redirect to dashboard
+      return <Navigate to="/dashboard" replace />;
+    }
   }
 
   // User is authenticated and has required permissions

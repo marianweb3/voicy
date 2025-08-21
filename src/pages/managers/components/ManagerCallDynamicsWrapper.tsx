@@ -160,7 +160,7 @@ const ManagerCallDynamicsWrapper = ({
       {isLoadingManagerDynamics ? (
         <LoadingSkeleton />
       ) : (
-        <CallDynamicsChart data={chartData} />
+        <CallDynamicsChart data={chartData} typeFilter={selectedType} />
       )}
     </div>
   );

@@ -1,6 +1,6 @@
 import { HiPencil } from "react-icons/hi2";
 import { IoTrashOutline } from "react-icons/io5";
-import { format, formatDistanceToNow, parseISO } from "date-fns";
+import { format, parseISO } from "date-fns";
 import { uk } from "date-fns/locale";
 
 interface User {
@@ -12,6 +12,7 @@ interface User {
   is_blocked: number;
   created_at: string;
   last_login_at: string | null;
+  department_id?: number;
 }
 
 interface UsersTableProps {
@@ -42,19 +43,21 @@ const UsersTable = ({
 
   // Helper function to format last login
   const formatLastLogin = (lastLogin: string | null) => {
-    if (!lastLogin) return "Ніколи не входив";
+    if (!lastLogin) return { type: "text", value: "Ніколи не входив" };
 
     const loginDate = parseISO(lastLogin);
     const now = new Date();
     const diffMs = now.getTime() - loginDate.getTime();
     const diffMins = Math.floor(diffMs / 60000);
 
-    if (diffMins < 5) return "Онлайн";
+    if (diffMins < 5) return { type: "text", value: "Онлайн" };
 
-    return formatDistanceToNow(loginDate, {
-      addSuffix: true,
-      locale: uk,
-    });
+    // Return formatted date/time like Дата додавання
+    return {
+      type: "datetime",
+      time: format(loginDate, "HH:mm", { locale: uk }),
+      date: format(loginDate, "dd-MM-yyyy", { locale: uk }),
+    };
   };
 
   // Loading skeleton component
@@ -74,6 +77,9 @@ const UsersTable = ({
                 </th>
                 <th className="text-left text-[#9A9A9A] text-[16px] font-normal py-3 px-4">
                   Email
+                </th>
+                <th className="text-left text-[#9A9A9A] text-[16px] font-normal py-3 px-4">
+                  Права
                 </th>
                 <th className="text-left text-[#9A9A9A] text-[16px] font-normal py-3 px-4">
                   Дата додавання
@@ -99,6 +105,10 @@ const UsersTable = ({
                   {/* Email Skeleton */}
                   <td className="py-4 px-4">
                     <div className="h-4 bg-gray-200 rounded-md w-40 animate-pulse"></div>
+                  </td>
+                  {/* Permissions Skeleton */}
+                  <td className="py-4 px-4">
+                    <div className="h-4 bg-gray-200 rounded-md w-32 animate-pulse"></div>
                   </td>
                   {/* Date Skeleton */}
                   <td className="py-4 px-4">
@@ -193,6 +203,9 @@ const UsersTable = ({
                 Email
               </th>
               <th className="text-left text-[#9A9A9A] text-[16px] font-normal py-3 px-4">
+                Права
+              </th>
+              <th className="text-left text-[#9A9A9A] text-[16px] font-normal py-3 px-4">
                 Дата додавання
               </th>
               <th className="text-left text-[#9A9A9A] text-[16px] font-normal py-3 px-4">
@@ -223,9 +236,11 @@ const UsersTable = ({
                         alt={user.full_name}
                         className="w-10 h-10 rounded-full object-cover"
                       />
-                      {formatLastLogin(user.last_login_at) === "Онлайн" && (
-                        <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-[#62B245] border-2 border-white rounded-full"></div>
-                      )}
+                      {formatLastLogin(user.last_login_at).type === "text" &&
+                        formatLastLogin(user.last_login_at).value ===
+                          "Онлайн" && (
+                          <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-[#62B245] border-2 border-white rounded-full"></div>
+                        )}
                     </div>
                     <span className="text-[#00101F] text-[16px] font-normal leading-[100%]">
                       {user.full_name}
@@ -237,6 +252,13 @@ const UsersTable = ({
                 <td className="py-4 px-4">
                   <span className="text-[#00101F] text-[16px] font-normal leading-[100%]">
                     {user.email}
+                  </span>
+                </td>
+
+                {/* Permissions */}
+                <td className="py-4 px-4">
+                  <span className="text-[#00101F] text-[16px] font-normal leading-[100%] max-w-[200px] truncate">
+                    {user.role.join(", ")}
                   </span>
                 </td>
 
@@ -254,15 +276,26 @@ const UsersTable = ({
 
                 {/* Last Login */}
                 <td className="py-4 px-4">
-                  <span
-                    className={`text-[16px] leading-[100%] ${
-                      formatLastLogin(user.last_login_at) === "Онлайн"
-                        ? "text-[#739C9C]"
-                        : "text-[#00101F]"
-                    }`}
-                  >
-                    {formatLastLogin(user.last_login_at)}
-                  </span>
+                  {formatLastLogin(user.last_login_at).type === "text" ? (
+                    <span
+                      className={`text-[16px] leading-[100%] ${
+                        formatLastLogin(user.last_login_at).value === "Онлайн"
+                          ? "text-[#739C9C]"
+                          : "text-[#00101F]"
+                      }`}
+                    >
+                      {formatLastLogin(user.last_login_at).value}
+                    </span>
+                  ) : (
+                    <div className="flex flex-col gap-1">
+                      <span className="text-[#00101F] text-[16px] font-semibold leading-[100%]">
+                        {formatLastLogin(user.last_login_at).time}
+                      </span>
+                      <span className="text-[#9A9A9A] text-[16px] font-normal leading-[100%]">
+                        {formatLastLogin(user.last_login_at).date}
+                      </span>
+                    </div>
+                  )}
                 </td>
 
                 {/* Actions */}
@@ -313,9 +346,10 @@ const UsersTable = ({
                     alt={user.full_name}
                     className="w-10 h-10 rounded-full object-cover"
                   />
-                  {formatLastLogin(user.last_login_at) === "Онлайн" && (
-                    <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-[#62B245] border-2 border-white rounded-full"></div>
-                  )}
+                  {formatLastLogin(user.last_login_at).type === "text" &&
+                    formatLastLogin(user.last_login_at).value === "Онлайн" && (
+                      <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-[#62B245] border-2 border-white rounded-full"></div>
+                    )}
                 </div>
                 <div>
                   <div className="text-[#00101F] text-[16px] font-normal leading-[100%]">
@@ -361,12 +395,17 @@ const UsersTable = ({
               </div>
               <div
                 className={`${
-                  formatLastLogin(user.last_login_at) === "Онлайн"
+                  formatLastLogin(user.last_login_at).type === "text" &&
+                  formatLastLogin(user.last_login_at).value === "Онлайн"
                     ? "text-[#739C9C]"
                     : "text-[#00101F]"
                 }`}
               >
-                {formatLastLogin(user.last_login_at)}
+                {formatLastLogin(user.last_login_at).type === "text"
+                  ? formatLastLogin(user.last_login_at).value
+                  : `${formatLastLogin(user.last_login_at).time} ${
+                      formatLastLogin(user.last_login_at).date
+                    }`}
               </div>
             </div>
           </div>

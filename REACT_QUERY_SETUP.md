@@ -36,7 +36,6 @@ import axios from "axios";
 const api = axios.create({
   baseURL: "https://api.dev-e4d.workers.dev",
   headers: { "Content-Type": "application/json" },
-  timeout: 10000,
 });
 
 // Request interceptor for auth token

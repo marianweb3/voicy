@@ -164,23 +164,23 @@ const StatusBar = () => {
       {isLoadingDashboard ? (
         <LoadingSkeleton />
       ) : (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-4">
           {data.map((item) => (
             <div
               key={item.id}
               className="bg-[#FFFFFF] rounded-[16px] p-4 md:p-6 flex items-center gap-3 md:gap-4"
             >
               <div
-                className="size-12 md:size-14 shrink-0 rounded-[6px] md:rounded-[8px] flex items-center justify-center"
+                className="size-8 md:size-11 shrink-0 rounded-[6px] md:rounded-[8px] flex items-center justify-center"
                 style={{ backgroundColor: item.backgroundColor }}
               >
                 {getIcon(item.icon, item.iconColor)}
               </div>
-              <div className="min-w-0 flex-1">
+              <div className="w-full flex-1">
                 <h3 className="text-[#00101F] text-[20px] md:text-[24px] leading-[100%] font-semibold ">
                   {item.value}
                 </h3>
-                <p className="text-[#9A9A9A] text-[12px] md:text-[14px] leading-[100%] mt-1">
+                <p className="text-[#9A9A9A] text-[12px] md:text-[12px] leading-[100%] mt-1">
                   {item.label}
                 </p>
               </div>

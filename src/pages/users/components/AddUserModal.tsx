@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Modal } from "../../../components/ui/modal";
 import { Button } from "../../../components/ui/button";
 import { Input } from "../../../components/ui/input";
+import { MultiselectDropdown } from "../../../components/ui/multiselect-dropdown";
 import { HiOutlineCamera } from "react-icons/hi2";
 import { MdOutlineEmail, MdOutlinePassword } from "react-icons/md";
 import { FaRegUser } from "react-icons/fa";
@@ -31,14 +32,33 @@ const AddUserModal = ({
     email: "",
     password: "",
     role: "admins,dashboard",
+    permissions: ["admins", "dashboard"] as string[],
   });
   const [avatar, setAvatar] = useState<string>("");
   const [photoFile, setPhotoFile] = useState<File | null>(null);
+
+  // Permissions options for multiselect
+  const permissionsOptions = [
+    { value: "admins", label: "Адміністратори" },
+    { value: "dashboard", label: "Дашборд" },
+    { value: "calls", label: "Дзвінки" },
+    { value: "managers", label: "Менеджери" },
+    { value: "processes", label: "Процеси" },
+    { value: "settings", label: "Налаштування" },
+  ];
 
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({
       ...prev,
       [field]: value,
+    }));
+  };
+
+  const handlePermissionsChange = (value: string[]) => {
+    setFormData((prev) => ({
+      ...prev,
+      permissions: value,
+      role: value.join(","), // Update role field to match permissions
     }));
   };
 
@@ -68,6 +88,7 @@ const AddUserModal = ({
         email: "",
         password: "",
         role: "admins,dashboard",
+        permissions: ["admins", "dashboard"],
       });
       setAvatar("");
       setPhotoFile(null);
@@ -82,6 +103,7 @@ const AddUserModal = ({
       email: "",
       password: "",
       role: "admins,dashboard",
+      permissions: ["admins", "dashboard"],
     });
     setAvatar("");
     setPhotoFile(null);
@@ -159,6 +181,22 @@ const AddUserModal = ({
               onChange={(e) => handleInputChange("email", e.target.value)}
               icon={<MdOutlineEmail size={18} />}
               iconPosition="left"
+            />
+          </div>
+
+          {/* Permissions Field */}
+          <div>
+            <label className="block text-[#9A9A9A] text-[14px] sm:text-[16px] font-normal mb-2">
+              Права
+            </label>
+            <MultiselectDropdown
+              options={permissionsOptions}
+              value={formData.permissions}
+              onChange={handlePermissionsChange}
+              placeholder="Виберіть права доступу"
+              variant="default"
+              size="sm"
+              className="!w-full"
             />
           </div>
 

@@ -69,7 +69,7 @@ const Pagination = ({
   const pageNumbers = generatePageNumbers();
 
   return (
-    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 py-4">
+    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 py-4 w-full">
       {/* Total Items Info */}
       <div className="flex items-center gap-2 order-2 md:order-1">
         <span className="text-[#00101F] text-[14px] md:text-[16px] font-normal">

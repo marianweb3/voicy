@@ -4,9 +4,11 @@ import { Input } from "../../../../components/ui/input";
 import { IoSearch } from "react-icons/io5";
 import { MdOutlineStar, MdOutlineStarBorder } from "react-icons/md";
 import { IoMdArrowForward } from "react-icons/io";
+import { HiPlus } from "react-icons/hi2";
 import { useManagerCalls } from "../../../../hooks/useManagers";
 import useDebounce from "../../../../hooks/useDebounce";
 import Pagination from "../../../users/components/Pagination";
+import AddAnalysisModal from "./AddAnalysisModal";
 
 const LastCalls = () => {
   const { id } = useParams<{ id: string }>();
@@ -16,6 +18,8 @@ const LastCalls = () => {
   const [searchValue, setSearchValue] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [isAddAnalysisModalOpen, setIsAddAnalysisModalOpen] = useState(false);
+  // const [isAnalyzing, setIsAnalyzing] = useState(false);
 
   // Debounce search value to avoid too many API calls
   const debouncedSearchValue = useDebounce(searchValue, 500);
@@ -106,14 +110,27 @@ const LastCalls = () => {
           )}
         </div>
 
-        <Input
-          placeholder="Пошук по ID або номеру клієнта"
-          value={searchValue}
-          onChange={handleSearchChange}
-          icon={<IoSearch size={18} />}
-          iconPosition="left"
-          containerClassName="w-full lg:!max-w-[400px]"
-        />
+        <div className="flex items-center gap-3">
+          <Input
+            placeholder="Пошук по ID або номеру клієнта"
+            value={searchValue}
+            onChange={handleSearchChange}
+            icon={<IoSearch size={18} />}
+            iconPosition="left"
+            containerClassName="w-full lg:!max-w-[400px]"
+          />
+
+          <button
+            onClick={() => setIsAddAnalysisModalOpen(true)}
+            className="size-8 sm:size-9 md:size-10 rounded-[8px] sm:rounded-[10px] md:rounded-[12px] flex items-center justify-center bg-[#EBF0F0] hover:bg-[#D1E5E5] transition-colors duration-200 group shrink-0"
+            title="Додати новий AI аналіз"
+          >
+            <HiPlus
+              size={16}
+              className="text-[#739C9C] group-hover:text-[#5F8888] transition-colors duration-200 sm:w-5 sm:h-5 md:w-6 md:h-6"
+            />
+          </button>
+        </div>
       </div>
 
       {/* Desktop Table View */}
@@ -350,6 +367,12 @@ const LastCalls = () => {
           onItemsPerPageChange={handleItemsPerPageChange}
         />
       )}
+
+      {/* Add Analysis Modal */}
+      <AddAnalysisModal
+        isOpen={isAddAnalysisModalOpen}
+        onClose={() => setIsAddAnalysisModalOpen(false)}
+      />
     </div>
   );
 };

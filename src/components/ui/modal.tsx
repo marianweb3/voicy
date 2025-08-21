@@ -66,7 +66,7 @@ const Modal: React.FC<ModalProps> = ({
           {/* Modal Content */}
           <motion.div
             className={clsx(
-              "relative w-full max-w-[95vw] sm:max-w-[600px] bg-white rounded-2xl shadow-lg max-h-[90vh] overflow-y-auto",
+              "relative w-full max-w-[95vw] sm:max-w-[600px] bg-white rounded-2xl shadow-lg max-h-[90vh]",
               className
             )}
             onClick={(e) => e.stopPropagation()}

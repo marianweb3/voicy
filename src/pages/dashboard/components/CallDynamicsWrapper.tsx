@@ -152,7 +152,7 @@ const CallDynamicsWrapper = ({
       {isLoadingDynamics ? (
         <LoadingSkeleton />
       ) : (
-        <CallDynamicsChart data={chartData} />
+        <CallDynamicsChart data={chartData} typeFilter={selectedType} />
       )}
     </div>
   );

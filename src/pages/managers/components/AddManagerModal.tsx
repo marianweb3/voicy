@@ -2,9 +2,11 @@ import { useState } from "react";
 import { Modal } from "../../../components/ui/modal";
 import { Button } from "../../../components/ui/button";
 import { Input } from "../../../components/ui/input";
+import { Dropdown } from "../../../components/ui/dropdown";
 import { HiOutlineCamera } from "react-icons/hi2";
 import { FaRegUser } from "react-icons/fa";
 import { MdOutlineEmail } from "react-icons/md";
+import { useDepartments } from "../../../hooks/useCalls";
 
 interface AddManagerModalProps {
   isOpen: boolean;
@@ -16,6 +18,7 @@ interface AddManagerModalProps {
       email: string;
       phone?: string;
       photo?: File;
+      department_id?: number;
     },
     onSuccess: () => void
   ) => void;
@@ -33,14 +36,34 @@ const AddManagerModal = ({
     name: "",
     email: "",
     phone: "",
+    department_id: undefined as number | undefined,
   });
   const [avatar, setAvatar] = useState<string>("");
   const [photoFile, setPhotoFile] = useState<File | null>(null);
+
+  // Fetch departments for dropdown
+  const { departments,  } = useDepartments();
+
+  // Department options for dropdown
+  const departmentOptions = [
+    { value: "", label: "Виберіть відділ" },
+    ...departments.map((department: { id: number; name: string }) => ({
+      value: department.id.toString(),
+      label: department.name,
+    })),
+  ];
 
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({
       ...prev,
       [field]: value,
+    }));
+  };
+
+  const handleDepartmentChange = (value: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      department_id: value ? parseInt(value) : undefined,
     }));
   };
 
@@ -57,7 +80,14 @@ const AddManagerModal = ({
   };
 
   const handleSubmit = () => {
-    if (formData.crmId && formData.name && formData.email) {
+    console.log(formData, "formData");
+
+    if (
+      formData.crmId &&
+      formData.name &&
+      formData.email &&
+      typeof formData.department_id === "number"
+    ) {
       onAddManager(
         {
           ...formData,
@@ -70,6 +100,7 @@ const AddManagerModal = ({
             name: "",
             email: "",
             phone: "",
+            department_id: undefined,
           });
           setAvatar("");
           setPhotoFile(null);
@@ -85,6 +116,7 @@ const AddManagerModal = ({
       name: "",
       email: "",
       phone: "",
+      department_id: undefined,
     });
     setAvatar("");
     setPhotoFile(null);
@@ -178,6 +210,20 @@ const AddManagerModal = ({
               onChange={(e) => handleInputChange("email", e.target.value)}
               icon={<MdOutlineEmail size={18} />}
               iconPosition="left"
+              className="!w-full"
+            />
+          </div>
+
+          <div>
+            <label className="block text-[#9A9A9A] text-[14px] sm:text-[16px] font-normal mb-2">
+              Відділ
+            </label>
+            <Dropdown
+              options={departmentOptions}
+              value={formData.department_id?.toString() || ""}
+              onChange={handleDepartmentChange}
+              variant="default"
+              size="sm"
               className="!w-full"
             />
           </div>

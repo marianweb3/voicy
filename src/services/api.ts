@@ -181,6 +181,7 @@ export interface ManagerCreateRequest {
   phone?: string;
   crm_id?: string;
   photo?: File;
+  department_id?: number;
 }
 
 export interface ManagerEditRequest {
@@ -189,6 +190,7 @@ export interface ManagerEditRequest {
   phone?: string;
   crm_id?: string;
   photo?: File;
+  department_id?: number;
 }
 
 export interface ManagerResponse {
@@ -400,6 +402,8 @@ export const managersAPI = {
     if (managerData.phone) formData.append("phone", managerData.phone);
     if (managerData.crm_id) formData.append("crm_id", managerData.crm_id);
     if (managerData.photo) formData.append("photo", managerData.photo);
+    if (managerData.department_id)
+      formData.append("department_id", managerData.department_id.toString());
 
     const response = await api.post("/managers/create", formData, {
       headers: {
@@ -421,6 +425,8 @@ export const managersAPI = {
     if (managerData.phone) formData.append("phone", managerData.phone);
     if (managerData.crm_id) formData.append("crm_id", managerData.crm_id);
     if (managerData.photo) formData.append("photo", managerData.photo);
+    if (managerData.department_id)
+      formData.append("department_id", managerData.department_id.toString());
 
     const response = await api.post(`/managers/edit/${id}`, formData, {
       headers: {
@@ -487,6 +493,26 @@ export const managersAPI = {
   }> => {
     const response = await api.get(`/managers/calls/${id}`, {
       params: { page, per_page, search },
+    });
+    return response.data;
+  },
+
+  analyzeAI: async (analysisData: {
+    id_crm: string;
+    manager_id: string;
+    client_phone: string;
+    file: File;
+  }): Promise<{ status: boolean; message: string; data?: any }> => {
+    const formData = new FormData();
+    formData.append("crm_order_id", analysisData.id_crm);
+    formData.append("manager_id", analysisData.manager_id);
+    formData.append("client_phone", analysisData.client_phone);
+    formData.append("file", analysisData.file);
+
+    const response = await api.post("/managers/ai", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
     });
     return response.data;
   },
@@ -811,7 +837,10 @@ export const callsAPI = {
     is_checked?: number,
     ai_score?: string,
     reject_reason?: string,
-    status?: string
+    status?: string,
+    date_from?: string,
+    date_to?: string,
+    department_id?: number
   ): Promise<CallsCatalogResponse> => {
     const params: Record<string, string | number> = {
       page,
@@ -824,6 +853,9 @@ export const callsAPI = {
     if (ai_score) params.ai_score = ai_score;
     if (reject_reason) params.reject_reason = reject_reason;
     if (status) params.status = status;
+    if (date_from) params.date_from = date_from;
+    if (date_to) params.date_to = date_to;
+    if (department_id) params.department_id = department_id;
 
     const response = await api.get("/calls/catalog", { params });
     return response.data;

@@ -45,7 +45,7 @@ const Comments = ({ callId }: CommentsProps) => {
     comments.length > 0 ? comments : isLoadingComments ? [] : [];
 
   return (
-    <div className="max-w-full lg:max-w-[448px] w-full bg-[#FFFFFF] rounded-2xl flex flex-col h-[600px] sm:h-[700px] lg:h-[850px]">
+    <div className="max-w-full lg:max-w-[448px] w-full bg-[#FFFFFF] rounded-2xl flex flex-col min-h-[500px] max-h-[600px]">
       {/* Header */}
       <div className="p-3 sm:p-4 lg:p-6 pb-3 sm:pb-4 lg:pb-6">
         <h2 className="text-[#00101F] font-semibold text-[18px] sm:text-[20px] lg:text-[24px] leading-[100%]">
@@ -69,6 +69,15 @@ const Comments = ({ callId }: CommentsProps) => {
             <div className="text-center">
               <p className="text-red-500 text-[12px] sm:text-[14px]">
                 Помилка завантаження коментарів
+              </p>
+            </div>
+          </div>
+        ) : commentsData.length === 0 ? (
+          <div className="flex items-center justify-center h-full">
+            <div className="text-center">
+              <p className="text-[#9A9A9A] text-[14px] sm:text-[16px]">
+                Коментарів поки немає. <br />
+                Будьте першим, хто залишить коментар!
               </p>
             </div>
           </div>

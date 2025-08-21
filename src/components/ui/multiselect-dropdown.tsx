@@ -1,18 +1,18 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { clsx } from "clsx";
-import { MdKeyboardArrowDown } from "react-icons/md";
+import { MdKeyboardArrowDown, MdCheck } from "react-icons/md";
 
-interface DropdownOption {
+interface MultiselectOption {
   value: string;
   label: string;
   disabled?: boolean;
 }
 
-interface DropdownProps {
-  options: DropdownOption[];
-  value?: string;
-  onChange: (value: string) => void;
+interface MultiselectDropdownProps {
+  options: MultiselectOption[];
+  value?: string[];
+  onChange: (value: string[]) => void;
   placeholder?: string;
   className?: string;
   disabled?: boolean;
@@ -21,21 +21,19 @@ interface DropdownProps {
   dropDirection?: "down" | "up";
 }
 
-const Dropdown = ({
+const MultiselectDropdown = ({
   options,
-  value,
+  value = [],
   onChange,
-  placeholder = "Select option",
+  placeholder = "Select options",
   className,
   disabled = false,
   size = "md",
   variant = "default",
   dropDirection = "down",
-}: DropdownProps) => {
+}: MultiselectDropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-
-  const selectedOption = options.find((option) => option.value === value);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -54,8 +52,10 @@ const Dropdown = ({
 
   const handleOptionClick = (optionValue: string) => {
     if (!disabled) {
-      onChange(optionValue);
-      setIsOpen(false);
+      const newValue = value.includes(optionValue)
+        ? value.filter((v) => v !== optionValue)
+        : [...value, optionValue];
+      onChange(newValue);
     }
   };
 
@@ -63,6 +63,15 @@ const Dropdown = ({
     if (!disabled) {
       setIsOpen(!isOpen);
     }
+  };
+
+  const getDisplayText = () => {
+    if (value.length === 0) return placeholder;
+    if (value.length === 1) {
+      const option = options.find((opt) => opt.value === value[0]);
+      return option?.label || value[0];
+    }
+    return `${value.length} обрано`;
   };
 
   // Animation and positioning based on drop direction
@@ -112,7 +121,7 @@ const Dropdown = ({
             // Default variant states
             !disabled && [
               "border-[#EAEAEA] bg-[#F7F7F7] text-[#00101F]",
-              !selectedOption && "text-[#9A9A9A]",
+              value.length === 0 && "text-[#9A9A9A]",
             ],
             disabled && [
               "border-[#EAEAEA] bg-[#EAEAEA] text-[#9A9A9A] cursor-not-allowed",
@@ -126,7 +135,7 @@ const Dropdown = ({
             // Minimal variant states
             !disabled && [
               "text-[#00101F] hover:bg-[#F7F7F7]",
-              !selectedOption && "text-[#9A9A9A]",
+              value.length === 0 && "text-[#9A9A9A]",
               isOpen && "bg-[#F7F7F7]",
             ],
             disabled && ["text-[#9A9A9A] cursor-not-allowed"],
@@ -134,9 +143,7 @@ const Dropdown = ({
         )}
         disabled={disabled}
       >
-        <span className="truncate">
-          {selectedOption ? selectedOption.label : placeholder}
-        </span>
+        <span className="truncate">{getDisplayText()}</span>
 
         <motion.div
           animate={{ rotate: isOpen ? 180 : 0 }}
@@ -161,7 +168,7 @@ const Dropdown = ({
             }}
             className={clsx(
               getPositionClasses(),
-              "bg-white border border-[#EAEAEA] rounded-[12px] shadow-lg z-50 overflow-hidden"
+              "bg-white border border-[#EAEAEA] rounded-[12px] shadow-lg z-50 overflow-hidden max-h-60 overflow-y-auto"
             )}
           >
             <div className="py-1">
@@ -177,7 +184,7 @@ const Dropdown = ({
                   onClick={() => handleOptionClick(option.value)}
                   disabled={option.disabled}
                   className={clsx(
-                    "w-full text-left transition-colors duration-150",
+                    "w-full text-left transition-colors duration-150 flex items-center gap-3",
                     {
                       "px-3 py-2 text-sm": size === "sm",
                       "px-4 py-3 text-[14px]": size === "md",
@@ -187,7 +194,7 @@ const Dropdown = ({
                     // Option states
                     !option.disabled && [
                       "text-[#00101F] hover:bg-[#F7F7F7] hover:text-[#739C9C]",
-                      option.value === value &&
+                      value.includes(option.value) &&
                         "bg-[#F7F7F7] text-[#739C9C] font-medium",
                     ],
 
@@ -196,7 +203,20 @@ const Dropdown = ({
                     ]
                   )}
                 >
-                  {option.label}
+                  {/* Checkbox */}
+                  <div
+                    className={clsx(
+                      "w-4 h-4 border-2 rounded flex items-center justify-center flex-shrink-0",
+                      value.includes(option.value)
+                        ? "border-[#739C9C] bg-[#739C9C]"
+                        : "border-[#EAEAEA] bg-white"
+                    )}
+                  >
+                    {value.includes(option.value) && (
+                      <MdCheck size={12} className="text-white" />
+                    )}
+                  </div>
+                  <span className="truncate">{option.label}</span>
                 </motion.button>
               ))}
             </div>
@@ -207,5 +227,5 @@ const Dropdown = ({
   );
 };
 
-export { Dropdown };
-export type { DropdownProps, DropdownOption };
+export { MultiselectDropdown };
+export type { MultiselectDropdownProps, MultiselectOption };
